@@ -1,4 +1,5 @@
-# Cadence: Growth Workspace
+# Cadence: Personal growth and Momentum Workspace
+
 
 <p align="center">
   <img src="public/logo.png" alt="Cadence Logo" width="100" height="100" />
