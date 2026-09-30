@@ -86,3 +86,6 @@ Thumbs.db
 # Project Reference Plans & Local Utility Scripts
 plan.md
 cleanup_ports.bat
+
+# Project Documentation
+documentation/
