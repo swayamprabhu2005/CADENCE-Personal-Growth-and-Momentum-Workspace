@@ -1,7 +1,7 @@
-# AI Goal Journal: Growth Workspace
+# Cadence: Growth Workspace
 
 <p align="center">
-  <img src="public/logo.png" alt="AI Goal Journal Logo" width="100" height="100" />
+  <img src="public/logo.png" alt="Cadence Logo" width="100" height="100" />
 </p>
 
 <p align="center">
@@ -28,7 +28,7 @@
 
 Traditional productivity applications require tedious manual bookkeeping: checking boxes, adjusting sliders, and categorizing tasks into rigid spreadsheets.
 
-**AI Goal Journal: Growth Workspace** eliminates tracking friction. Users reflect naturally—either by speaking through their microphone or typing conversationally. The platform combines:
+**Cadence: Growth Workspace** eliminates tracking friction. Users reflect naturally—either by speaking through their microphone or typing conversationally. The platform combines:
 - **On-Device Speech Recognition (`faster-whisper` CPU INT8)**: Local, private, zero-cloud transcription.
 - **Custom PyTorch Emotion AI (4-Head Attention BiLSTM)**: Rapid on-device detection across 10 emotional states with trigger keyword extraction in ~3–5 ms.
 - **Interactive Two-Way AI Coach (Groq Cloud API)**: Lightning-fast conversational coaching grounded with active goals, habit streaks, recent reflections, and emotional pulse.
