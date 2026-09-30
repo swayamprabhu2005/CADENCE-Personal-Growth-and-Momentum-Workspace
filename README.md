@@ -1,5 +1,8 @@
 # Cadence: Personal growth and Momentum Workspace
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8660f7e483e7bff62f97a766765a91a55d84274d
 
 <p align="center">
   <img src="public/logo.png" alt="Cadence Logo" width="100" height="100" />
