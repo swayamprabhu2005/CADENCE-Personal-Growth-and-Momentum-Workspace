@@ -57,7 +57,7 @@ export default function Landing() {
               {/* Tagline Pill */}
               <div className="animate-rise inline-flex items-center gap-2 rounded-full border border-[#4B5D3C]/30 bg-white/80 px-4 py-1.5 text-xs font-bold text-[#4B5D3C] shadow-xs backdrop-blur-md mb-5">
                 <span className="h-2 w-2 rounded-full bg-[#4B5D3C] animate-pulse" />
-                <span>🌱 AI Goal Journal & Coach</span>
+                <span>🌱 Cadence</span>
               </div>
 
               {/* Main Headline */}

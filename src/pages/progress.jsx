@@ -273,21 +273,23 @@ export default function Progress() {
   const streak = computeStreak(journals);
   const completedActivities = goals.length + journals.length;
   
-  const completedGoalsCount = goals.filter((g) => g.status?.toLowerCase() === "completed").length;
-  const activeGoalsCount = goals.filter((g) => g.status?.toLowerCase() === "active").length;
+const completedGoalsCount = goals.filter(
+  (g) => g.status?.toLowerCase() === "completed"
+).length;
 
-  const overallProgress = (() => {
-    if (goals.length > 0) {
-      return Math.min(
-        100,
-        Math.round(((completedGoalsCount * 1.0 + activeGoalsCount * 0.5) / goals.length) * 100)
-      );
-    }
-    if (journals.length > 0) {
-      return Math.min(100, journals.length * 25);
-    }
-    return 0;
-  })();
+const activeGoalsCount = goals.filter(
+  (g) => g.status?.toLowerCase() === "active"
+).length;
+
+const overallProgress =
+  goals.length > 0
+    ? Math.round(
+        goals.reduce(
+          (sum, goal) => sum + Number(goal.progress_value ?? 0),
+          0
+        ) / goals.length
+      )
+    : 0;
 
   const recentActivity = [
     ...journals.map((j) => ({

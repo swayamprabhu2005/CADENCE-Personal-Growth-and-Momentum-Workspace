@@ -240,7 +240,7 @@ export default function Settings() {
                       ? `Sync is active with ${calendarEmail || "your Google Account"}. Goals and milestones you schedule will appear in your primary calendar.`
                       : !calendarConfigured
                       ? "Free 1-click Google Calendar integration. A one-time setup of Google OAuth credentials in your .env file is needed."
-                      : "Authorize AI Goal Journal to schedule goal deadlines and accountability events in your calendar. Journals are never shared."}
+                      : "Authorize Cadence to schedule goal deadlines and accountability events in your calendar. Journals are never shared."}
                   </p>
                 </div>
 

@@ -85,7 +85,7 @@ export default function GoogleCalendarSetupModal({ isOpen, onClose }) {
                 Enable Google Calendar API
               </h4>
               <p className="mt-1">
-                Create a project (e.g. <em>"AI Goal Journal"</em>), search for <strong>Google Calendar API</strong> in the API Library, and click <strong>Enable</strong>.
+                Create a project (e.g. <em>"Cadence"</em>), search for <strong>Google Calendar API</strong> in the API Library, and click <strong>Enable</strong>.
               </p>
             </div>
           </div>
@@ -104,7 +104,7 @@ export default function GoogleCalendarSetupModal({ isOpen, onClose }) {
               </p>
               <ul className="mt-1.5 list-disc list-inside space-y-1 text-slate-600">
                 <li>Choose <strong>External</strong> user type and click Create.</li>
-                <li>App name: <em>AI Goal Journal</em> (add your email as developer contact).</li>
+                <li>App name: <em>Cadence</em> (add your email as developer contact).</li>
                 <li>Under <strong>Scopes</strong>, select: <code className="bg-slate-100 px-1 py-0.5 rounded text-[#4B5D3C] font-mono">.../auth/calendar.events</code></li>
                 <li>Under <strong>Test users</strong> (or Audience), add your own Google email address.</li>
               </ul>
