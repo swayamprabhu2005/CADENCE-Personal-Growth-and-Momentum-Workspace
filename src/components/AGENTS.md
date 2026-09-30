@@ -21,21 +21,28 @@ Provide reusable, accessible, unstyled-by-default or token-styled UI components 
 - **`FormattedChatMessage.jsx`**:
   - High-readability chat renderer for AI coaching responses.
   - Formats markdown headers (`###`), bold keyphrases (`**`), bullet points, numbered action steps, and quote callouts into structured Calm Moss aesthetic cards.
+- **`MoodBadge.jsx`**:
+  - Semantic badge rendering for all 10 PyTorch emotion classes (`accomplishment`, `motivation`, `focus`, `gratitude`, `breakthrough`, `burnout`, `overwhelmed`, `frustration`, `guilt`, `neutral`).
 - **`VoiceRecorder.jsx`**:
   - Encapsulates `navigator.mediaDevices.getUserMedia` and `MediaRecorder`.
-  - Must support lifecycle: `idle` $\rightarrow$ `recording` $\rightarrow$ `recorded` $\rightarrow$ `transcribing` $\rightarrow$ `editable_transcript`.
-  - Must provide an editable `<textarea>` containing the raw transcript so the user can edit or discard before inserting into the journal.
-  - Must cleanly release audio tracks (`stream.getTracks().forEach(t => t.stop())`) and revoke object URLs on unmount/reset.
-- **`Button.jsx`**:
-  - Supports variants: `primary`, `secondary`, `ghost`, `danger`.
-  - Supports `loading` spinner and `disabled` states with accessible focus rings.
-- **`Card.jsx`**:
-  - Container element applying `rounded-card border border-line bg-white/80 p-5 shadow-soft`.
-- **`Input.jsx`**:
-  - Accessible form control with `<label>`, error messaging, and `aria-invalid` bindings.
+  - Supports lifecycle: `idle` $\rightarrow$ `recording` $\rightarrow$ `recorded` $\rightarrow$ `transcribing` $\rightarrow$ `editable_transcript`.
+  - Provides an editable `<textarea>` containing the raw transcript so the user can edit or discard before inserting into the journal.
+  - Cleanly releases audio tracks (`stream.getTracks().forEach(t => t.stop())`) and revokes object URLs on unmount/reset.
+- **`GoogleCalendarBanner.jsx` / `SyncGoogleCalendarModal.jsx` / `GoogleCalendarSetupModal.jsx`**:
+  - Non-intrusive calendar banner providing instant setup modal and OAuth token verification for syncing goal deadlines and roadmap milestones.
+- **`RoadmapCelebration.jsx` / `GoalCelebration.jsx` / `GoalCompletionCelebration.jsx`**:
+  - Micro-celebration overlays with Canvas Confetti bursts triggered when completing a goal or reaching 100% on a learning roadmap.
+- **`ErrorBoundary.jsx`**:
+  - Graceful React component tree fallback preventing unhandled exceptions from crashing the application shell.
+- **`Button.jsx` / `Card.jsx` / `Input.jsx`**:
+  - Accessible form controls and containers adhering to the Calm Moss design tokens (`rounded-card`, focus rings, soft shadows).
+- **`ToastNotification.jsx`**:
+  - Notification pill rendering status toasts (`success`, `warning`, `error`).
 - **`Navbar.jsx` / `Sidebar.jsx` / `AppShell.jsx`**:
-  - Application layout frames providing consistent brand header and navigation links (`Dashboard`, `Journal`, `Goals`, `AI Coach`, `Insights`, `Habits`, `Progress`, `Calendar`, `Profile`).
-  - `AppShell.jsx` ensures automatic scroll-to-top on route changes.
+  - Application layout frames providing consistent brand header and navigation links (`Dashboard`, `Calendar`, `Progress`, `AI Journal`, `Goals`, `Habits`, `AI Coach`, `AI Insights`, `Profile`, `Settings`).
+  - `AppShell.jsx` ensures automatic scroll-to-top on route changes and persistent brand framing.
+- **`PublicNavbar.jsx` / `PublicFooter.jsx`**:
+  - Public landing page header with scroll detection, anchor links (`#how-it-works`, `#journey`, `#features`), and footer branding.
 
 ---
 
@@ -43,3 +50,4 @@ Provide reusable, accessible, unstyled-by-default or token-styled UI components 
 
 - Do NOT embed direct API calls inside primitive components (like `Button` or `Card`).
 - Do NOT use hardcoded colors outside the Tailwind theme palette.
+- Do NOT ignore reduced-motion user preferences during animation rendering.

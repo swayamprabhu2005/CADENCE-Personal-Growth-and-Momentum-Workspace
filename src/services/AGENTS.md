@@ -8,7 +8,8 @@
 ## 1. Responsibilities
 
 - **`authService.js`**: Modular authentication service using Firebase Auth (`firebase/auth`). Exposes Email/Password credentials and OAuth 2.0 social sign-in (`GoogleAuthProvider`, `OAuthProvider('microsoft.com')`).
-- **`api.js`**: Centralized HTTP client communicating with FastAPI backend `/api/v1/*`. Automatically injects the Firebase ID token in the `Authorization: Bearer <token>` header.
+- **`api.js`**: Centralized HTTP client communicating with FastAPI backend `/api/v1/*`. Automatically injects the Firebase ID token in the `Authorization: Bearer <token>` header with retry logic on transient network failures.
+- **`roadmapApi.js`**: Client module dedicated to generating AI roadmaps and checking off milestones.
 
 ---
 
@@ -30,7 +31,8 @@
    - `habitApi`: `getHabits()`, `toggleHabit(id, date)`
    - `coachApi`: `chat(message, recentMessages)`
    - `summaryApi`: `getWeeklySummary()`, `generateWeeklySummary()`
-   - `progressApi`: `getGoalTrend(goalId, days)`
+   - `progressApi`: `getGoalTrend(goalId, days)`, `recordProgress(data)`
    - `roadmapApi`: `generateRoadmap(goalId)`, `toggleMilestone(roadmapId, milestoneId)`
+   - `calendarApi`: `getSyncStatus()`, `syncCalendar(authData)`, `disconnectCalendar()`
 4. **Error Normalization**:
    - HTTP errors must be parsed and raised as descriptive errors containing backend error messages.

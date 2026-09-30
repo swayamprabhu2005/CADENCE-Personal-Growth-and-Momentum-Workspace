@@ -14,6 +14,8 @@ The `backend/` directory houses the complete FastAPI application providing REST 
 - **Custom Emotion AI**: PyTorch 4-Head Attention BiLSTM model (`app/services/mood_service.py`) detecting emotional states (`accomplishment`, `motivation`, `focus`, `gratitude`, `breakthrough`, `burnout`, `overwhelmed`, `frustration`, `guilt`, `neutral`) with confidence and keyword extraction in ~3–5 ms on CPU.
 - **Conversational AI Coach**: Interactive two-way coaching via Groq Cloud API (`app/services/groq_service.py`, `app/api/v1/coach.py`) using `openai/gpt-oss-120b`, grounded with user goals, habit streaks, recent journals, and emotional pulse.
 - **Smart Goals & Velocity**: Goal CRUD, auto-goal creation, deterministic matching, priority calculation (`High Priority`, `Medium Priority`, `Low Priority`), and completion progress auto-sync.
+- **AI Roadmap Generator**: Dynamic curriculum generation via Gemini (`app/services/roadmap_service.py`, `app/api/v1/roadmap.py`) with milestone tracking and progress auto-sync.
+- **Google Calendar Integration**: OAuth2 connection and synchronization for scheduling goal deadlines and roadmap milestones into user Google Calendars (`app/services/google_calendar_service.py`, `app/api/v1/calendar.py`).
 - **Historical Progress & Trends**: Progress checkpoint recording, chronological progress history, step deltas (`change_from_previous`), trend direction (`Improving`, `Stagnant`, `Declining`), and guaranteed 100% completion milestone.
 - **Enriched Habits Tracker**: Single-query habit performance endpoint calculating `completed_today`, `current_streak`, and `recent_logs` in one database pass to eliminate $N+1$ latency.
 - **Weekly Accountability Coach**: On-demand weekly AI reflection synthesis with habit and blocker analysis.
@@ -62,27 +64,31 @@ The `backend/` directory houses the complete FastAPI application providing REST 
   - `summaries.py` — Weekly AI accountability summaries
   - `productivity.py` — Productivity score (0–100) endpoint
   - `roadmap.py` — AI-powered Goal Roadmap generation, milestone tracking, and step completion
+  - `calendar.py` — Google Calendar OAuth token exchange, sync status, and milestone calendar integration
 - `app/core/` — Infrastructure and security utilities:
   - `config.py` — Environment configuration (`Settings`) including `GROQ_API_KEY` and `GROQ_MODEL`
   - `auth.py` — Firebase ID token verification dependency
   - `crypto.py` — AES-256-GCM field encryption service
   - `key_rotation.py` — Key rotation management utility
 - `app/database/` — Database connection probing, session creation, engine setup, and auto-migrations (`connection.py`, `init_db.py`, `orm_models.py`)
-- `app/models/` — Domain dataclasses (`domain.py`)
-- `app/repositories/` — Repository pattern (`in_memory.py` for testing/RAM fallback, `postgres.py` for dual PostgreSQL/SQLite persistence)
-- `app/schemas/` — Pydantic validation schemas (`journal.py`, `coach.py`, `habit.py`, `goal.py`, `roadmap.py`, `user.py`, `summary.py`)
+- `app/models/` — Domain dataclasses (`domain.py`, `user.py`)
+- `app/repositories/` — Repository pattern (`in_memory.py`, `postgres.py`, `calendar_repo.py`)
+- `app/schemas/` — Pydantic validation schemas (`journal.py`, `coach.py`, `habit.py`, `goal.py`, `roadmap.py`, `user.py`, `summary.py`, `progress.py`, `productivity.py`)
 - `app/services/` — Core business logic services:
   - `mood_service.py` — PyTorch 10-Class Attention BiLSTM inference engine
   - `groq_service.py` — Groq Cloud conversational coach with context grounding
   - `gemini_service.py` — Google Gemini structured extraction and roadmap generator
   - `whisper_service.py` — faster-whisper on-device speech transcription
-  - `journal_service.py`, `goal_service.py`, `habit_service.py`, `progress_service.py`, `productivity_service.py`, `migration_service.py`
+  - `google_calendar_service.py` — Google Calendar API synchronization
+  - `journal_service.py`, `goal_service.py`, `habit_service.py`, `progress_service.py`, `productivity_service.py`, `roadmap_service.py`, `migration_service.py`, `encryption_service.py`
 - `scripts/` — Database administration and maintenance scripts:
   - `migrate_existing_data.py` — Safe batch migration CLI tool converting legacy plaintext to AES-256-GCM ciphertext
 - `tests/` — Automated pytest test suite:
   - `test_mood_and_coach.py` — PyTorch mood inference and Groq coach tests
   - `test_roadmap_api.py` — Roadmap endpoints & milestone completion
   - `test_progress_trends.py` — Period metrics & delta analytics
+  - `test_encryption.py` — AES-256-GCM field encryption & decrypt tests
+  - `test_google_calendar.py` — Google Calendar token handling & synchronization tests
   - `test_migration.py` — Encryption migration idempotency
   - `test_slash_routes.py` — URL routing integrity
   - `test_unit.py` — Core unit and isolation tests
