@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Eye, EyeOff, Target } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import ToastNotification from "../components/ToastNotification";
 
@@ -146,11 +146,11 @@ export default function Auth() {
           }`}
         >
           <div className="flex items-center justify-center md:justify-start gap-2.5 mb-6">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#4B5D3C] shadow-md shadow-[#4B5D3C]/20">
-              <Target size={17} className="text-white" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white border border-[#E2E9DF] shadow-xs p-1 overflow-hidden">
+              <img src="/logo.png" alt="Cadence Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <span className="text-sm font-extrabold tracking-widest text-[#26261F] uppercase">
-              AI JOURNAL
+              CADENCE
             </span>
           </div>
 
@@ -252,11 +252,11 @@ export default function Auth() {
           }`}
         >
           <div className="flex items-center justify-center md:justify-start gap-2.5 mb-5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#4B5D3C] shadow-md shadow-[#4B5D3C]/20">
-              <Target size={17} className="text-white" />
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-white border border-[#E2E9DF] shadow-xs p-1 overflow-hidden">
+              <img src="/logo.png" alt="Cadence Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <span className="text-sm font-extrabold tracking-widest text-[#26261F] uppercase">
-              AI JOURNAL
+              CADENCE
             </span>
           </div>
 

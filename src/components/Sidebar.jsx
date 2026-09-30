@@ -143,11 +143,11 @@ export default function Sidebar({
         <div className="flex h-[84px] shrink-0 items-center justify-between border-b border-[#E2E9DF] px-6 lg:hidden">
           <div className="flex items-center gap-3.5">
             <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white border border-[#E2E9DF] shadow-xs p-1 animate-float overflow-hidden">
-              <img src="/logo.png" alt="AI Journal Logo" className="h-full w-full object-contain rounded-lg" />
+              <img src="/logo.png" alt="Cadence Logo" className="h-full w-full object-contain rounded-lg" />
             </div>
             <div>
               <p className="text-base font-bold tracking-tight text-[#26261F] font-serif">
-                AI JOURNAL
+                CADENCE
               </p>
               <p className="text-[10px] uppercase tracking-[0.2em] text-[#4B5D3C] font-extrabold">
                 Growth workspace

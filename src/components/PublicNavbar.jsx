@@ -74,12 +74,12 @@ export default function PublicNavbar() {
         {/* BRAND & LOGO */}
         <Link to="/" className="flex items-center gap-3 group">
           <div className="relative flex h-11 w-11 items-center justify-center rounded-2xl bg-white border border-[#E2E9DF] shadow-xs p-1 overflow-hidden transition-transform duration-300 group-hover:scale-105 group-hover:border-[#4B5D3C]">
-            <img src="/logo.png" alt="AI Journal Logo" className="h-full w-full object-contain rounded-xl" />
+            <img src="/logo.png" alt="Cadence Logo" className="h-full w-full object-contain rounded-xl" />
             <span className="absolute inset-0 bg-[#4B5D3C]/5 opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
           <div>
             <p className="text-lg font-bold tracking-tight text-[#26261F] font-serif leading-none">
-              AI JOURNAL
+              CADENCE
             </p>
             <p className="text-[10px] uppercase tracking-[0.2em] text-[#4B5D3C] font-extrabold mt-1">
               Growth Workspace

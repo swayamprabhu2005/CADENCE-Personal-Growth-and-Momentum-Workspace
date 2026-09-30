@@ -9,11 +9,11 @@ export default function PublicFooter() {
           <div className="md:col-span-2">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white border border-[#E2E9DF] shadow-xs p-1 overflow-hidden">
-                <img src="/logo.png" alt="AI Journal Logo" className="h-full w-full object-contain rounded-lg" />
+                <img src="/logo.png" alt="Cadence Logo" className="h-full w-full object-contain rounded-lg" />
               </div>
               <div>
                 <p className="text-sm font-bold tracking-tight text-[#26261F] font-serif">
-                  AI JOURNAL
+                  CADENCE
                 </p>
                 <p className="text-[9px] uppercase tracking-[0.18em] text-[#4B5D3C] font-extrabold">
                   Growth Workspace
@@ -38,7 +38,7 @@ export default function PublicFooter() {
         </div>
 
         <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-500 font-medium">
-          <p>© {new Date().getFullYear()} AI Journal. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Cadence. All rights reserved.</p>
           <p className="italic text-[#4B5D3C] font-semibold">Powered by Google Gemini & faster-whisper.</p>
         </div>
       </div>
