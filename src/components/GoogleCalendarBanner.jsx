@@ -24,8 +24,8 @@ function getCachedCalendarStatus() {
 }
 
 export default function GoogleCalendarBanner({ onStatusChange, className = "" }) {
-  const [status, setStatus] = useState(() => getCachedCalendarStatus() || { connected: false, is_configured: false });
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState(() => getCachedCalendarStatus());
+  const [loading, setLoading] = useState(!getCachedCalendarStatus());
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState("");
   const [showSetupModal, setShowSetupModal] = useState(false);
@@ -36,11 +36,9 @@ export default function GoogleCalendarBanner({ onStatusChange, className = "" })
 
   async function fetchStatus() {
     try {
+      if (!status) setLoading(true);
       setError("");
-      const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error("Timeout")), 3000)
-      );
-      const res = await Promise.race([calendarApi.getStatus(), timeoutPromise]);
+      const res = await calendarApi.getStatus();
       if (res) {
         setStatus(res);
         try {
@@ -49,7 +47,7 @@ export default function GoogleCalendarBanner({ onStatusChange, className = "" })
         if (onStatusChange) onStatusChange(res);
       }
     } catch (err) {
-      console.warn("Google Calendar status fetch skipped/fallback:", err?.message);
+      console.warn("Google Calendar status fetch note:", err?.message);
     } finally {
       setLoading(false);
     }
