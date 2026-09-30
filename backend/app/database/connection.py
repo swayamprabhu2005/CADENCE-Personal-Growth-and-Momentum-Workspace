@@ -39,7 +39,7 @@ try:
         connect_args=connect_args,
     )
     if DATABASE_URL.startswith("postgresql"):
-        # Verify server is actually reachable (handles stopped local Docker containers)
+        # Verify server is actually reachable (handles stopped containers / auth errors)
         with engine.connect() as probe_conn:
             pass
 except Exception as e:

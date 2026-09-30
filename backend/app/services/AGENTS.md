@@ -1,6 +1,6 @@
 # Services Subtree DOX Contract — backend/app/services/AGENTS.md
 
-> **Subtree Scope**: Business logic, AI extraction, and speech processing (`backend/app/services/`)  
+> **Subtree Scope**: Business logic, AI extraction, emotion analysis, and external services (`backend/app/services/`)  
 > **Parent Contract**: [`../AGENTS.md`](file:///../AGENTS.md)
 
 ---
@@ -14,8 +14,10 @@
   - High-speed conversational AI coach powered by Groq Cloud API (`openai/gpt-oss-120b`, fallback `qwen/qwen3.8-27b`, `openai/gpt-oss-20b`).
   - Context grounding injecting user's active goals, habit streaks, recent journals, and detected emotional pulse.
 - **`roadmap_service.py`**:
-  - AI learning roadmap generator utilizing Gemini Flash-Lite to produce 4–8 sequential milestones with realistic durations.
+  - AI learning roadmap generator utilizing Gemini Flash-Lite to produce sequential milestones with realistic durations.
   - Bidirectional progress synchronization (checking off roadmap milestones updates goal progress up to 100%) and offline curriculum fallbacks.
+- **`google_calendar_service.py`**:
+  - Google Calendar OAuth 2.0 integration for scheduling goal deadlines and roadmap milestone accountability events.
 - **`whisper_service.py`**:
   - Encapsulates `faster_whisper.WhisperModel` initialized strictly with `model_size_or_path="tiny"`, `device="cpu"`, `compute_type="int8"`.
   - Lazy-loaded singleton; manages temporary file creation and immediate deletion in `finally` blocks.
@@ -32,13 +34,15 @@
   - Calculates chronological history, step deltas (`change_from_previous`), trend direction (`Improving`, `Stagnant`, `Declining`), and average progress gain.
 - **`productivity_service.py`**:
   - Computes multi-factor deterministic productivity score (0–100) combining goal completion, habit consistency, weekly progress velocity, and active blocker penalties.
-- **`migration_service.py`**:
-  - Safe, idempotent batch migration service scanning plaintext entries and converting them to AES-256-GCM ciphertext (`enc:v1:`).
+- **`habit_service.py`**:
+  - Single-pass habit calculation managing current streaks, completion history, and daily one-way lockouts.
+- **`encryption_service.py` / `migration_service.py`**:
+  - Safe, idempotent batch migration and encryption services scanning plaintext entries and converting them to AES-256-GCM ciphertext (`enc:v1:`).
   - Dry-run capability, error isolation, and detailed migration reporting.
 - **`journal_service.py`**:
-  - Orchestrates journal lifecycle: saving text $\rightarrow$ calling Gemini analysis $\rightarrow$ matching goals $\rightarrow$ persisting structured items.
+  - Orchestrates journal lifecycle: saving text $\rightarrow$ calling Gemini analysis $\rightarrow$ running PyTorch mood classification $\rightarrow$ matching goals $\rightarrow$ persisting structured items with AES-256-GCM encryption.
 - **`summary_service.py`**:
-  - Gathers user's in-memory data for on-demand weekly coaching summary generation.
+  - Gathers user's records for on-demand weekly coaching summary generation.
 
 ---
 
@@ -51,3 +55,5 @@
    - Gemini suggestions must be filtered through deterministic backend logic before mutating goal statuses or linking activities.
 3. **Data Loss Prevention**:
    - If Gemini raises an exception or returns unparseable output, the journal entry must still be persisted with an `ai_analysis=None` or error placeholder. Never drop the user's reflection.
+4. **Decrypted Plaintext for AI Models**:
+   - All AI services (Gemini, Groq, PyTorch mood analyzer) must receive decrypted plaintext strings, never ciphertext tokens.

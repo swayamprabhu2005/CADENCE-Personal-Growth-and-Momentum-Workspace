@@ -12,7 +12,7 @@ Run:
 import json
 
 from app.services.gemini_service import GeminiService, GeminiExtractionError
-from .sample_journals import SAMPLE_ENTRIES
+from sample_journals import SAMPLE_ENTRIES
 
 
 def main():

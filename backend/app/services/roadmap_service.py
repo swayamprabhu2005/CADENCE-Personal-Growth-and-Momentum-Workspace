@@ -1,66 +1,155 @@
 import uuid
 from datetime import datetime
 from typing import Optional, Any
+
 from app.models.domain import Roadmap
 from app.schemas.roadmap import RoadmapResponse, Milestone
 from app.repositories.postgres import roadmap_repo, goal_repo
 from app.services.gemini_service import gemini_service
+from app.core.crypto import crypto_service
+
 
 class RoadmapService:
-    def _domain_to_response(self, roadmap: Roadmap) -> RoadmapResponse:
+
+    def _decrypt_goal_title(self, value: Optional[str]) -> str:
+        if not value:
+            return ""
+
+        try:
+            return crypto_service.decrypt(value) or ""
+        except Exception:
+            # Existing plaintext roadmap titles continue to work
+            return value
+
+    def _domain_to_response(
+        self,
+        roadmap: Roadmap
+    ) -> RoadmapResponse:
+
         milestone_objs = []
         completed_count = 0
+
         for m in roadmap.milestones:
+
             if isinstance(m, dict):
                 ms = Milestone(
                     step_number=m.get("step_number", 1),
                     title=m.get("title", ""),
-                    short_description=m.get("short_description", ""),
-                    estimated_duration=m.get("estimated_duration", "1 week"),
-                    key_action_item=m.get("key_action_item", ""),
-                    completed=m.get("completed", False),
+                    short_description=m.get(
+                        "short_description",
+                        ""
+                    ),
+                    estimated_duration=m.get(
+                        "estimated_duration",
+                        "1 week"
+                    ),
+                    key_action_item=m.get(
+                        "key_action_item",
+                        ""
+                    ),
+                    completed=m.get(
+                        "completed",
+                        False
+                    ),
                 )
+
             elif isinstance(m, Milestone):
                 ms = m
+
             else:
                 ms = Milestone(
-                    step_number=getattr(m, "step_number", 1),
-                    title=getattr(m, "title", ""),
-                    short_description=getattr(m, "short_description", ""),
-                    estimated_duration=getattr(m, "estimated_duration", "1 week"),
-                    key_action_item=getattr(m, "key_action_item", ""),
-                    completed=getattr(m, "completed", False),
+                    step_number=getattr(
+                        m,
+                        "step_number",
+                        1
+                    ),
+                    title=getattr(
+                        m,
+                        "title",
+                        ""
+                    ),
+                    short_description=getattr(
+                        m,
+                        "short_description",
+                        ""
+                    ),
+                    estimated_duration=getattr(
+                        m,
+                        "estimated_duration",
+                        "1 week"
+                    ),
+                    key_action_item=getattr(
+                        m,
+                        "key_action_item",
+                        ""
+                    ),
+                    completed=getattr(
+                        m,
+                        "completed",
+                        False
+                    ),
                 )
 
             if ms.completed:
                 completed_count += 1
+
             milestone_objs.append(ms)
 
         total = len(milestone_objs)
-        pct = int((completed_count / total) * 100) if total > 0 else 0
+
+        pct = (
+            int((completed_count / total) * 100)
+            if total > 0
+            else 0
+        )
 
         created_str = (
-            roadmap.created_at.strftime("%Y-%m-%d %H:%M:%S")
-            if isinstance(roadmap.created_at, datetime)
-            else str(roadmap.created_at or "")
+            roadmap.created_at.strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+            if isinstance(
+                roadmap.created_at,
+                datetime
+            )
+            else str(
+                roadmap.created_at or ""
+            )
         )
 
         return RoadmapResponse(
             goal_id=roadmap.goal_id,
-            goal_title=roadmap.goal_title,
+
+            # Return decrypted value to frontend
+            goal_title=self._decrypt_goal_title(
+                roadmap.goal_title
+            ),
+
             total_milestones=total,
-            estimated_total_duration=roadmap.estimated_total_duration,
+            estimated_total_duration=(
+                roadmap.estimated_total_duration
+            ),
             milestones=milestone_objs,
             completed_count=completed_count,
             progress_percentage=pct,
             created_at=created_str,
         )
 
-    def _response_to_domain(self, user_id: str, goal_id: str, response: RoadmapResponse) -> Roadmap:
+    def _response_to_domain(
+        self,
+        user_id: str,
+        goal_id: str,
+        response: RoadmapResponse
+    ) -> Roadmap:
+
         milestones_list = []
+
         for m in response.milestones:
+
             if isinstance(m, Milestone):
-                milestones_list.append(m.model_dump())
+                milestones_list.append(
+                    m.model_dump()
+                )
+
             elif isinstance(m, dict):
                 milestones_list.append(m)
 
@@ -68,9 +157,16 @@ class RoadmapService:
             id=str(uuid.uuid4()),
             goal_id=goal_id,
             user_id=user_id,
-            goal_title=response.goal_title,
+
+            # Encrypt before database storage
+            goal_title=crypto_service.encrypt(
+                response.goal_title
+            ),
+
             total_milestones=response.total_milestones,
-            estimated_total_duration=response.estimated_total_duration,
+            estimated_total_duration=(
+                response.estimated_total_duration
+            ),
             milestones=milestones_list,
             created_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
@@ -84,10 +180,12 @@ class RoadmapService:
         timeline: str = "Self-paced",
         level: str = "Beginner",
     ) -> RoadmapResponse:
-        """
-        Retrieves existing saved roadmap for a goal/user, or generates and persists a new one.
-        """
-        existing = roadmap_repo.get_by_goal(user_id=user_id, goal_id=goal_id)
+
+        existing = roadmap_repo.get_by_goal(
+            user_id=user_id,
+            goal_id=goal_id
+        )
+
         if existing:
             return self._domain_to_response(existing)
 
@@ -98,17 +196,30 @@ class RoadmapService:
             goal_id=goal_id,
         )
 
-        domain_roadmap = self._response_to_domain(user_id=user_id, goal_id=goal_id, response=generated)
+        domain_roadmap = self._response_to_domain(
+            user_id=user_id,
+            goal_id=goal_id,
+            response=generated
+        )
+
         saved = roadmap_repo.save(domain_roadmap)
+
         return self._domain_to_response(saved)
 
-    def get_roadmap(self, user_id: str, goal_id: str) -> Optional[RoadmapResponse]:
-        """
-        Retrieves saved roadmap for a goal if it exists.
-        """
-        existing = roadmap_repo.get_by_goal(user_id=user_id, goal_id=goal_id)
+    def get_roadmap(
+        self,
+        user_id: str,
+        goal_id: str
+    ) -> Optional[RoadmapResponse]:
+
+        existing = roadmap_repo.get_by_goal(
+            user_id=user_id,
+            goal_id=goal_id
+        )
+
         if not existing:
             return None
+
         return self._domain_to_response(existing)
 
     def toggle_milestone(
@@ -118,31 +229,36 @@ class RoadmapService:
         step_number: int,
         completed: Optional[bool] = None,
     ) -> Optional[RoadmapResponse]:
-        """
-        Toggles or sets completion status for a specific milestone in a goal's roadmap,
-        persisting changes and updating goal progress.
-        """
+
         updated = roadmap_repo.toggle_milestone(
             user_id=user_id,
             goal_id=goal_id,
             step_number=step_number,
             completed=completed,
         )
+
         if not updated:
             return None
 
         res = self._domain_to_response(updated)
+
         try:
             from app.services.progress_service import progress_service
+
             progress_service.create_progress(
                 user_id=user_id,
                 goal_id=goal_id,
                 progress_value=res.progress_percentage,
-                note=f"Roadmap milestone step {step_number} updated",
+                note=(
+                    f"Roadmap milestone step "
+                    f"{step_number} updated"
+                ),
             )
-        except Exception as e:
+
+        except Exception:
             pass
 
         return res
+
 
 roadmap_service = RoadmapService()

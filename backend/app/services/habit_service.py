@@ -4,8 +4,30 @@ from typing import Optional
 
 from app.models.domain import Habit, HabitLog
 from app.repositories.postgres import habit_repo
+from app.core.crypto import crypto_service
+
 
 class HabitService:
+
+    def _decrypt_habit(self, habit: Optional[Habit]) -> Optional[Habit]:
+        if not habit:
+            return None
+
+        try:
+            name = crypto_service.decrypt(habit.name) or ""
+        except Exception:
+            # Existing plaintext values continue to work
+            name = habit.name or ""
+
+        return Habit(
+            id=habit.id,
+            user_id=habit.user_id,
+            name=name,
+            description=habit.description,
+            frequency=habit.frequency,
+            created_at=habit.created_at,
+            updated_at=habit.updated_at,
+        )
 
     def create_habit(
         self,
@@ -18,19 +40,27 @@ class HabitService:
         habit = Habit(
             id=str(uuid.uuid4()),
             user_id=user_id,
-            name=name,
+            name=crypto_service.encrypt(name.strip()),
             description=description,
             frequency=frequency,
         )
 
-        return habit_repo.create(habit)
+        saved = habit_repo.create(habit)
+
+        return self._decrypt_habit(saved)
 
     def get_habits(
         self,
         user_id: str
     ) -> list[Habit]:
 
-        return habit_repo.get_all_by_user(user_id)
+        habits = habit_repo.get_all_by_user(user_id)
+
+        return [
+            self._decrypt_habit(habit)
+            for habit in habits
+            if habit
+        ]
 
     def get_habit(
         self,
@@ -38,10 +68,12 @@ class HabitService:
         habit_id: str
     ) -> Optional[Habit]:
 
-        return habit_repo.get_by_id(
+        habit = habit_repo.get_by_id(
             user_id,
             habit_id
         )
+
+        return self._decrypt_habit(habit)
 
     def update_habit(
         self,
@@ -50,11 +82,20 @@ class HabitService:
         **kwargs
     ) -> Optional[Habit]:
 
-        return habit_repo.update(
+        # Encrypt only a newly supplied name.
+        # Description remains unchanged.
+        if "name" in kwargs and kwargs["name"] is not None:
+            kwargs["name"] = crypto_service.encrypt(
+                str(kwargs["name"]).strip()
+            )
+
+        updated = habit_repo.update(
             user_id,
             habit_id,
             **kwargs
         )
+
+        return self._decrypt_habit(updated)
 
     def delete_habit(
         self,
